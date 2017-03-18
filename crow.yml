@@ -84,3 +84,10 @@
       copy:
         src: files/crow_bot.service
         dest: /lib/systemd/system/crow_bot.service
+
+  handlers:
+
+    - name: Restart Crow
+      service:
+        name: crow_bot
+        state: restarted
