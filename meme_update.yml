@@ -16,6 +16,8 @@
         dest: /opt/hangoutsbot/local/memes
         update: yes
         accept_hostkey: yes
+      notify: 
+        - Restart Crow
 
     - name: "Make sure sauce.txt is a symlink"
       file:
@@ -24,3 +26,10 @@
         owner: crow
         force: yes
         state: link
+
+  handlers:
+
+    - name: Restart Crow
+      service:
+        name: crow_bot
+        state: restarted
