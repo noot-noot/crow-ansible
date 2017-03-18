@@ -1,0 +1,74 @@
+---
+- hosts: all
+  remote_user: root
+  vars:
+    ansible_connection: local
+  vars_files:
+    - crow.vars.yml
+
+  tasks:
+
+    - name: Install Packages Needed for hangupsbot
+      apt: 
+        name: "{{item}}"
+        state: installed
+      with_items:
+       - python3
+       - git
+       - python3-pip
+       - python3-virtualenv
+
+    - name: Make Sure user exists
+      user: 
+        name: crow 
+        comment: "Hangouts Bot User"
+        generate_ssh_key: yes
+        system: yes
+        skeleton: yes
+
+    - name: Read SSH public key to authorize
+      shell: cat /home/crow/.ssh/id_rsa.pub
+      register: ssh_pub_key       
+      changed_when: False
+
+    - name: Authorize key with GitHub
+      local_action:
+        module: github_key
+        name: Access Key for Some Machine
+        token: '{{ crow_github_token }}'
+        pubkey: '{{ ssh_pub_key.stdout }}'
+
+    - name: Make sure install directory exists and belongs to hangoutsbot user
+      file:
+        dest: /opt/hangoutsbot
+        state: directory
+        owner: crow
+
+    - name: Clone Hangoutsbot repo
+      become: yes
+      become_user: crow
+      git:
+        repo: git@github.com:hangoutsbot/hangoutsbot.git
+        dest: /opt/hangoutsbot/hangoutsbot
+        update: no
+        accept_hostkey: yes
+
+    - name: Install python dependencies into a virtualenv
+      pip:
+        virtualenv_python: python3
+        virtualenv: /opt/hangoutsbot/hangoutsbot_env
+        requirements: /opt/hangoutsbot/hangoutsbot/requirements.txt
+
+    - name: Make Sure Config Directory is Present
+      file:
+        dest: /home/crow/.local/share/hangupsbot
+        state: directory
+        recurse: yes
+        owner: crow
+
+    - name: Make Sure config file is present and current
+      copy:
+        src: files/config.json
+        dest: /home/crow/.local/share/hangupsbot/config.json
+        owner: crow
+        force: yes
