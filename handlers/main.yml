@@ -1,0 +1,6 @@
+---
+
+ - name: Restart Crow
+   service:
+     name: crow
+     state: restarted

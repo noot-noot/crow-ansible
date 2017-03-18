@@ -1,0 +1,11 @@
+[Unit]
+Description=Crow Bot for Hangouts
+
+[Service]
+ExecStart=/opt/hangoutsbot/hangoutsbot_env/bin/python3 /opt/hangoutsbot/hangoutsbot/hangupsbot/hangupsbot.py
+StandardOutput=null
+User=crow
+
+[Install]
+WantedBy=multi-user.target
+Alias=crow.service

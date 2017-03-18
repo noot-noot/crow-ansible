@@ -72,3 +72,15 @@
         dest: /home/crow/.local/share/hangupsbot/config.json
         owner: crow
         force: yes
+
+    - name: Make Sure Config Directory is Present
+      file:
+        dest: /opt/hangoutsbot/local/memes
+        state: directory
+        recurse: yes
+        owner: crow
+
+    - name: make sure unitfile is present
+      copy:
+        src: files/crow_bot.service
+        dest: /lib/systemd/system/crow_bot.service

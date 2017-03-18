@@ -1,0 +1,26 @@
+---
+- hosts: all
+  remote_user: root
+  vars:
+    ansible_connection: local
+  vars_files:
+    - crow.vars.yml
+ 
+  tasks:
+  
+    - name: "Clone latest memefile"
+      become: yes
+      become_user: crow
+      git:
+        repo: git@github.com:noot-noot/crow-memes.git
+        dest: /opt/hangoutsbot/local/memes
+        update: yes
+        accept_hostkey: yes
+
+    - name: "Make sure sauce.txt is a symlink"
+      file:
+        src: /opt/hangoutsbot/local/memes/sauce.txt
+        dest: /opt/hangoutsbot/hangoutsbot/hangupsbot/plugins/image_linker_reddit/sauce.txt
+        owner: crow
+        force: yes
+        state: link
