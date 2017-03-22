@@ -5,8 +5,6 @@ Description=Crow Bot for Hangouts
 ExecStart=/opt/hangoutsbot/hangoutsbot_env/bin/python3 /opt/hangoutsbot/hangoutsbot/hangupsbot/hangupsbot.py
 StandardOutput=null
 User=crow
-Restart=always
-FailureAction=reboot
 
 [Install]
 WantedBy=multi-user.target
